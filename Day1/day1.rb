@@ -1,4 +1,4 @@
-# First Day of coding challenge in ruby!
+# First Day of coding challenge in ruby!'
 module Program
   SLIDING_WINDOW_SIZE = 3
 
@@ -19,22 +19,22 @@ module Program
     end
     counter
   end
+
   def compute_array_sums(array)
     window_indexes = [-2, -1, 0]
     windows_dict = {}
     windows_dict.default_proc = proc { |dict, key| dict[key] = [] }
-    array.each_with_index do |element, index|
+    array.each do |element|
       window_indexes.each do |window_index|
-        unless window_index < 0
-          windows_dict[window_index] << element
-        end
+        windows_dict[window_index] << element unless window_index.negative?
       end
-      window_indexes = window_indexes.map { |index| index + 1 }
+      window_indexes = window_indexes.map { |value| value + 1 }
     end
     windows_dict.map do |_, value|
       value.sum
     end
   end
+
   def day1_second_part(array)
     array = compute_array_sums(array)
     day1_first_part(array)
