@@ -2,8 +2,13 @@ module Program
 
   module_function
 
-  def day1
-    array = [199,200,208,210,200,207,240,269,260,263]
+  def read_from_file
+    array = []
+    File.foreach("input.txt") { |line| array << line.to_i }
+    return array
+  end
+
+  def day1(array)
     last_element = -1
     counter = 0
     array.each do |element|
@@ -18,4 +23,5 @@ module Program
   end
 end
 
-puts Program::day1
+array = Program::read_from_file
+puts Program::day1(array)
