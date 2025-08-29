@@ -43,6 +43,13 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 Simple as unix :
 
+> **Warning**: Ensure you have those libraries installed
+
+```sh
+sudo apt-get install libz-dev libssl-dev libffi-dev libyaml-dev
+```
+
+
 ```sh
 sudo apt install rbenv & rbenv init
 ```
