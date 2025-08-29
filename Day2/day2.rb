@@ -1,6 +1,7 @@
 # Day 2 implementation
 module Day2
-  SubMarineInstruction = Data.define(:instruction, :number)
+  class SubMarineInstruction < Data.define(:instruction, :number)
+  end
 
   # SubMarine that can to up, down, or forward
   class SubMarine
@@ -9,16 +10,16 @@ module Day2
       @depth = 0
     end
 
-    def forward(number: Numeric)
+    def forward(number)
       @horizontal_position += number
     end
 
-    def down(number: Numeric)
-      @depth -= number
+    def down(number)
+      @depth += number
     end
 
-    def up(number: Numeric)
-      @depth += number
+    def up(number)
+      @depth -= number
     end
 
     def position
@@ -30,21 +31,26 @@ module Day2
     end
   end
 
+  module_function
+
   def read_from_file
     array = []
-    File.foreach('input.txt') { |line| array << SubMarineInstruction.new(line.to_s.split) }
+    File.foreach('input.txt') do |line|
+      array << line.to_s.split.each_slice(2) do |instruction, number|
+        SubMarineInstruction.new(instruction: instruction, number: number)
+      end
+    end
     array
   end
 
   def day2_first_part(array)
     submarine = SubMarine.new
     array.each do |element|
-      instruction, number = element.values_at(:instruction, :number)
-      submarine.public_send(instruction, *number)
+      submarine.public_send(element[0], element[1].to_i)
     end
     submarine.position
   end
 end
 
-array = Program.read_from_file
-puts Program.day1_first_part(array)
+array = Day2.read_from_file
+puts Day2.day2_first_part(array)
