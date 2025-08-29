@@ -1,5 +1,5 @@
 # rubyCoding
-Implementation of Coding challenge 2021 with ruby. It is interesting to have knowledge in language you don't mainly use. So I try to learn *ruby* with this challenge.
+Implementation of [Advent of code](https://adventofcode.com/2021/) 2021 with ruby. It is interesting to have knowledge in language you don't mainly use. So I try to learn *ruby* with this challenge.
 
 PS : Please don't judge my code :p
 
@@ -69,7 +69,7 @@ When _rbenv_ is installed, ruby version can be easily installed.
 rbenv install -l
 ```
 
-> Install ruby version (here 3.3.2)
+> Install ruby version (here considering 3.3.2 as latest version of ruby)
 ```sh
 rbenv install 3.3.2
 ```
@@ -81,7 +81,7 @@ rbenv local 3.3.2
 
 > Checks of the version installed
 ```sh
-rbenv versions # Should output 3.3.2-1
+rbenv versions # Should output 3.3.2
 ```
 
 > Apply this version to shell
