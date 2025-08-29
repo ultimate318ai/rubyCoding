@@ -4,8 +4,10 @@ Implementation of [Advent of code](https://adventofcode.com/2021/) 2021 with rub
 PS : Please don't judge my code :p
 
 
-# Install
+----------------------------------------------------------------------
 
+
+# Installation
 
 ## Rbenv
 
@@ -37,9 +39,7 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 & "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
 ```
 
-
 ### Unix (from https://github.com/rbenv/rbenv)
-
 
 Simple as unix :
 
@@ -72,7 +72,6 @@ git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 ```
 
-
 ## Ruby
 
 When _rbenv_ is installed, ruby version can be easily installed.
@@ -102,9 +101,7 @@ rbenv versions # Should output 3.3.2
 rbenv shell 3.3.2 # Now taping 'ruby' in shell should works!
 ```
 
-
 ## Ruby In Vscode
-
 
 Now that *ruby* is installed locally, we have to link it to our files. At first ruby file looks like this:
 
@@ -116,7 +113,13 @@ for this.
 > Follow the instruction in order to install extension.
 > 
 
-Install it with ruby : 
+**Prerequisite:** Install ruby-dev
+
+```sh
+sudo apt install ruby-dev
+```
+
+Install it with ruby :
 
 ```sh
 gem install ruby-lsp
@@ -156,13 +159,10 @@ gem install rubocop # this should  install about 10 gems
 execute command
 
 ```sh
+apt install ruby-bundler
 bundle update
 ```
 
-
-
 We should now have rbenv ruby version linked to rubyLsp:
-
-
 
 ------------------------------------------------
