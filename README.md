@@ -59,6 +59,12 @@ git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 ~/.rbenv/bin/rbenv init
 ```
 
+> Install rbenv plugin to have latest versions of ruby:
+
+```sh
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+```
+
 
 ## Ruby
 
