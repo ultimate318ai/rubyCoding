@@ -11,7 +11,7 @@ module Day3
   end
 
   def retrieve_number_of_zero_per_digit(input_array)
-    number_of_zero_per_element_digit = Array.new(input_array[0].length, 0)
+    number_of_zero_per_element_digit = Array.new(input_array[0].length - 1, 0)
     input_array.each do |element|
       element.chars.each_with_index do |digit, index|
         number_of_zero_per_element_digit[index] += 1 if digit == '0'
@@ -24,14 +24,13 @@ module Day3
     gamma_rate = ''
 
     retrieve_number_of_zero_per_digit(input_array).each do |number_of_zero|
-      gamma_rate += number_of_zero >= input_array.length / 2 ? '0' : '1'
+      gamma_rate += number_of_zero > ((input_array.length - 1) / 2) ? '0' : '1'
     end
 
-    epsilon_rate = gamma_rate
+    epsilon_rate = gamma_rate.clone
     gamma_rate.chars.each_with_index do |digit, index|
       epsilon_rate[index] = digit == '0' ? '1' : '0'
     end
-
     gamma_rate.to_i(2) * epsilon_rate.to_i(2)
   end
 end
