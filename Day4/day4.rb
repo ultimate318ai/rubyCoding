@@ -91,8 +91,30 @@ module Day4
     end
     'No Grid has won'
   end
+
+  def second_part(input_results, grids_values)
+    grids = populate_grids(grids_values).map do |grid|
+      { state: grid, won?: false }
+    end
+    last_winning_grid_score = nil
+    input_results.each do |value|
+      grids = grids.reject do |grid|
+        grid[:won]
+      end
+
+      grids.each do |grid|
+        grid[:state].mark_all(value)
+        if grid[:state].winning?
+          last_winning_grid_score = grid[:state].score(value)
+          grid[:won] = true
+        end
+      end
+    end
+    last_winning_grid_score.nil? ? 'No Grid has won' : last_winning_grid_score
+  end
 end
 
 (input_results, grids_values) = Day4.read_from_file
 puts Day4.first_part(input_results, grids_values)
-# puts Day4.second_part(input_array)
+
+puts Day4.second_part(input_results, grids_values)
