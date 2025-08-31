@@ -51,9 +51,13 @@ module Day4
     end
 
     def column_winning?
-      @grid_values.all? do |_, row|
-        row.each_value.first[:marked]
+      columns_winning = Array.new(5, true)
+      @grid_values.each_value do |row|
+        row.each_value.with_index do |column_value, index|
+          columns_winning[index] = false unless column_value[:marked]
+        end
       end
+      columns_winning.any?
     end
   end
 
