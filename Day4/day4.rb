@@ -5,9 +5,9 @@ module Day4
     def initialize(height, width, values)
       @height = height
       @width = width
-      @grid_values = values.each_with_index.with_object({}) do |(element, index), grid|
-        value_width_position = index % height
-        value_height_position = index / width
+      @grid_values = values.flatten.each_with_index.with_object({}) do |(element, index), grid|
+        value_width_position = index % width
+        value_height_position = index / height
         grid[value_height_position] = {} unless grid.key?(value_height_position)
         grid[value_height_position][value_width_position] = { value: element, marked: false }
       end
@@ -19,6 +19,17 @@ module Day4
           column_element[:marked] = true if column_element[:value] == value
         end
       end
+    end
+
+    def score(winning_value)
+      return 0 unless winning?
+
+      not_marked_sum = @grid_values.sum do |_, row|
+        row.sum do |_, column_value|
+          column_value[:marked] ? 0 : column_value[:value].to_i
+        end
+      end
+      winning_value.to_i * not_marked_sum
     end
 
     def winning?
@@ -45,40 +56,39 @@ module Day4
       end
     end
   end
+
+  module_function
+
+  def read_from_file
+    input_results = []
+    grids_values = []
+    File.open('input.txt').each_with_index do |line, index|
+      input_results = line.split(',') if index.zero?
+      grids_values << line.split unless index.zero? || line.split.empty?
+    end
+    [input_results, grids_values]
+  end
+
+  def populate_grids(grids_values)
+    grids = []
+    grids_values.each_slice(5) do |values| # One line consist in 5 values
+      grids << Day4::Grid.new(5, 5, values)
+    end
+    grids
+  end
+
+  def first_part(input_results, grids_values)
+    grids = populate_grids(grids_values)
+    input_results.each do |value|
+      grids.each do |grid|
+        grid.mark_all(value)
+        return grid.score(value) if grid.winning?
+      end
+    end
+    'No Grid has won'
+  end
 end
 
-# input_array = Day4.read_from_file
-
-grid = Day4::Grid.new(5, 5, [22, 13, 17, 11, 0,
-
-                             8, 2, 23, 4, 24,
-
-                             21, 9, 14, 16, 7,
-
-                             6, 10, 3, 18,  5,
-
-                             1, 12, 20, 15, 19])
-
-# puts grid
-puts grid.winning?
-
-grid.mark_all(22)
-puts grid.winning?
-
-grid.mark_all(8)
-puts grid.winning?
-
-grid.mark_all(21)
-puts grid.winning?
-
-grid.mark_all(6)
-puts grid.winning?
-
-grid.mark_all(0)
-puts grid.winning?
-
-grid.mark_all(1)
-puts grid.winning?
-
-# puts Day4.first_part(input_array)
+(input_results, grids_values) = Day4.read_from_file
+puts Day4.first_part(input_results, grids_values)
 # puts Day4.second_part(input_array)
