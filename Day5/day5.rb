@@ -48,7 +48,7 @@ module Day5
       (0..max_x.to_i).each do |x|
         (0..max_y.to_i).each do |y|
           point = Day5::Point.new(x, y)
-          @stored_points[point.hash] = point
+          @stored_points[point.hash] = point # TODO: this does not work yet
         end
       end
     end
