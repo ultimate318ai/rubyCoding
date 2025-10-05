@@ -4,14 +4,24 @@ module Day5
 
   # Point object with counter
   class Point
+    attr_reader :x, :y, :count
+
     def initialize(x, y)
       @x = x
       @y = y
       @count = 0
     end
 
-    def to_s
+    def hash
       "#{@x},#{@y}"
+    end
+
+    def to_s
+      if @count.zero?
+        '.'
+      else
+        @count.to_s
+      end
     end
 
     def increment_counter
@@ -22,12 +32,23 @@ module Day5
   # Grid of points value with min and max coordinates
   class Grid
     def initialize(points)
+      # puts points
+      max_x = points.select(&:x).max_by(&:x).x
+      max_y = points.select(&:y).max_by(&:y).y
+
       @stored_points = {}
+      add_empty_points(max_x, max_y)
+
       points.each do |point|
-        if @stored_points.key?(point.to_s)
-          @stored_points[point.to_s].increment_counter
-        else
-          @stored_points[point.to_s] = point
+        @stored_points[point.hash].increment_counter
+      end
+    end
+
+    def add_empty_points(max_x, max_y)
+      (0..max_x.to_i).each do |x|
+        (0..max_y.to_i).each do |y|
+          point = Day5::Point.new(x, y)
+          @stored_points[point.hash] = point
         end
       end
     end
@@ -38,20 +59,19 @@ module Day5
   end
 
   def read_from_file
-    points_to_cover = []
     File.open('input.txt').each do |line|
       x1y1, x2y2 = line.split(' -> ')
       x1, y1 = x1y1.split(',') # 0,9
       x2, y2 = x2y2.split(',') # 5,9
-      points_to_cover << to_points(x1, y1, x2, y2)
+      puts Day5::Grid.new(to_points(x1, y1, x2, y2))
     end
-    puts Day5::Grid.new(points_to_cover)
   end
 
   def to_points(x1, y1, x2, y2)
     points = []
-    min_x, max_x = [x1, x2].minmax
-    min_y, max_y = [y1, y2].minmax
+
+    min_x, max_x = [x1.to_i, x2.to_i].minmax
+    min_y, max_y = [y1.to_i, y2.to_i].minmax
     (min_x..max_x).each do |x|
       (min_y..max_y).each do |y|
         points << Day5::Point.new(x, y)
