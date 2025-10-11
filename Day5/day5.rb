@@ -31,40 +31,55 @@ module Day5
 
   # Grid of points value with min and max coordinates
   class Grid
+    attr_reader :x, :y, :count
+
     def initialize(points)
-      # puts points
-      max_x = points.select(&:x).max_by(&:x).x
-      max_y = points.select(&:y).max_by(&:y).y
+      @max_x = points.select(&:x).max_by(&:x).x
+      @max_y = points.select(&:y).max_by(&:y).y
 
       @stored_points = {}
-      add_empty_points(max_x, max_y)
+      add_empty_points
+      add_points(points)
+    end
 
+    def add_empty_points
+      (0..@max_x.to_i).each do |x|
+        (0..@max_y.to_i).each do |y|
+          point = Day5::Point.new(x, y)
+          @stored_points[point.hash] = point
+        end
+      end
+    end
+
+    def add_points(points)
       points.each do |point|
         @stored_points[point.hash].increment_counter
       end
     end
 
-    def add_empty_points(max_x, max_y)
-      (0..max_x.to_i).each do |x|
-        (0..max_y.to_i).each do |y|
-          point = Day5::Point.new(x, y)
-          @stored_points[point.hash] = point # TODO: this does not work yet
-        end
-      end
-    end
-
     def to_s
-      @stored_points.sort_by { |x, y| [x, y] }.each(&:to_s).join("\n")
+      counter = 0
+      @stored_points.map do |(coordinates, point)|
+        if counter < @max_x
+          counter += 1
+          next "(#{coordinates}) [#{point}] "
+        else
+          counter = 0
+          next "(#{coordinates}) [#{point}]\n"
+        end
+      end.join.to_s
     end
   end
 
   def read_from_file
+    points = []
     File.open('input.txt').each do |line|
       x1y1, x2y2 = line.split(' -> ')
       x1, y1 = x1y1.split(',') # 0,9
       x2, y2 = x2y2.split(',') # 5,9
-      puts Day5::Grid.new(to_points(x1, y1, x2, y2))
+      points << to_points(x1, y1, x2, y2)
     end
+    puts Day5::Grid.new(points.flatten)
   end
 
   def to_points(x1, y1, x2, y2)
