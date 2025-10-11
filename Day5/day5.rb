@@ -69,6 +69,10 @@ module Day5
         end
       end.join.to_s
     end
+
+    def number_of_overlap
+      @stored_points.map { |_, point| point.count }.count { |count| count > 1 }
+    end
   end
 
   def read_from_file
@@ -79,20 +83,33 @@ module Day5
       x1y1, x2y2 = line.split(' -> ')
       x1, y1 = x1y1.split(',').map(&:to_i)
       x2, y2 = x2y2.split(',').map(&:to_i)
-      if x1 > max_x
-        max_x = x1
-      elsif x2 > max_x
-        max_x = x2
-      end
 
-      if y1 > max_y
-        max_y = y1
-      elsif y2 > max_y
-        max_y = xy
-      end
+      max_x = get_max_from_x(x1, x2, max_x)
+      max_y = get_max_from_x(y1, y2, max_y)
       points << to_points(x1, y1, x2, y2) if x1 == x2 || y1 == y2
     end
-    puts Day5::Grid.new(points.flatten, max_x, max_y)
+    grid = Day5::Grid.new(points.flatten, max_x, max_y)
+    puts grid
+    puts 'number of overlap:'
+    puts grid.number_of_overlap
+  end
+
+  def get_max_from_x(x1, x2, max_x)
+    if x1 > max_x
+      max_x = x1
+    elsif x2 > max_x
+      max_x = x2
+    end
+    max_x
+  end
+
+  def get_max_from_y(y1, y2, max_y)
+    if y1 > max_y
+      max_y = y1
+    elsif y2 > max_y
+      max_y = y2
+    end
+    max_y
   end
 
   def to_points(x1, y1, x2, y2)
