@@ -33,9 +33,9 @@ module Day5
   class Grid
     attr_reader :x, :y, :count
 
-    def initialize(points)
-      @max_x = points.select(&:x).max_by(&:x).x
-      @max_y = points.select(&:y).max_by(&:y).y
+    def initialize(points, max_x, max_y)
+      @max_x = max_x
+      @max_y = max_y
 
       @stored_points = {}
       add_empty_points
@@ -43,8 +43,8 @@ module Day5
     end
 
     def add_empty_points
-      (0..@max_x.to_i).each do |x|
-        (0..@max_y.to_i).each do |y|
+      (0..@max_x).each do |x|
+        (0..@max_y).each do |y|
           point = Day5::Point.new(x, y)
           @stored_points[point.hash] = point
         end
@@ -73,20 +73,33 @@ module Day5
 
   def read_from_file
     points = []
+    max_x = 0
+    max_y = 0
     File.open('input.txt').each do |line|
       x1y1, x2y2 = line.split(' -> ')
-      x1, y1 = x1y1.split(',') # 0,9
-      x2, y2 = x2y2.split(',') # 5,9
-      points << to_points(x1, y1, x2, y2)
+      x1, y1 = x1y1.split(',').map(&:to_i)
+      x2, y2 = x2y2.split(',').map(&:to_i)
+      if x1 > max_x
+        max_x = x1
+      elsif x2 > max_x
+        max_x = x2
+      end
+
+      if y1 > max_y
+        max_y = y1
+      elsif y2 > max_y
+        max_y = xy
+      end
+      points << to_points(x1, y1, x2, y2) if x1 == x2 || y1 == y2
     end
-    puts Day5::Grid.new(points.flatten)
+    puts Day5::Grid.new(points.flatten, max_x, max_y)
   end
 
   def to_points(x1, y1, x2, y2)
     points = []
 
-    min_x, max_x = [x1.to_i, x2.to_i].minmax
-    min_y, max_y = [y1.to_i, y2.to_i].minmax
+    min_x, max_x = [x1, x2].minmax
+    min_y, max_y = [y1, y2].minmax
     (min_x..max_x).each do |x|
       (min_y..max_y).each do |y|
         points << Day5::Point.new(x, y)
