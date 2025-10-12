@@ -10,10 +10,30 @@ module Day6
     fish_list
   end
 
+  def decrement_fish_list(fish_list)
+    fish_list.map { |fish| fish - 1 }
+  end
+
+  def append_new_fish_to_list(fish_list)
+    new_fish = []
+    fish_list.each { |fish| new_fish << 8 if fish.negative }
+    fish_list + new_fish
+  end
+
+  def iterate(days, initial_fish_list)
+    fish_list = initial_fish_list
+    count = 1
+    while count < days
+      fish_list = decrement_fish_list(fish_list)
+      fish_list = append_new_fish_to_list(fish_list)
+      puts "After #{count} iteration(s): #{fish_list}"
+    end
+    fish_list
+  end
+
   def first_part
     input_results = Day6.read_from_file_part1
-    puts 'number of fish:'
-    puts input_results
+    puts "Initial state: #{input_results}"
   end
 end
 
