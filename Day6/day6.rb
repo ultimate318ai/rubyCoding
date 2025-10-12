@@ -49,28 +49,30 @@ module Day6
 
     def execute_puzzle_input
       input_results = Day6.read_from_file
-      puts "Number of Fish: #{Part2.iterate(256, input_results)}"
+      puts "Number of Fish: #{Part2.compute(256, input_results)}"
     end
 
     def decrement_fish_list(fish_list)
       fish_list.map { |fish| fish - 1 }
     end
 
-    def append_new_fish_to_list(fish_list)
-      new_fish = []
-      fish_list.each { |fish| new_fish << 8 if fish.negative? }
-      fish_list + new_fish
-    end
-
-    def iterate(days, initial_fish_list)
-      fish_list = initial_fish_list
-      count = 1
-      while count < days + 1
-        fish_list = decrement_fish_list(fish_list)
-        fish_list = append_new_fish_to_list(fish_list)
+    def append_new_fish_to_list(initial_fish_list, fish_number)
+      count = 0
+      while count < fish_number
+        initial_fish_list << 8
         count += 1
       end
-      fish_list.length
+      initial_fish_list
+    end
+
+    def compute(days, initial_fish_list)
+      sum = 0
+      initial_fish_list.each do |fish|
+        new_fish_number = days - fish + 1
+        sum += new_fish_number
+        initial_fish_list = append_new_fish_to_list(initial_fish_list, new_fish_number)
+      end
+      sum
     end
   end
 end
