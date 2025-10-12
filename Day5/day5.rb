@@ -75,7 +75,7 @@ module Day5
     end
   end
 
-  def read_from_file
+  def read_from_file_part1
     points = []
     max_x = 0
     max_y = 0
@@ -86,9 +86,14 @@ module Day5
 
       max_x = get_max_from_x(x1, x2, max_x)
       max_y = get_max_from_x(y1, y2, max_y)
-      points << to_points(x1, y1, x2, y2) if x1 == x2 || y1 == y2
+      points << from_lines_to_points(x1, y1, x2, y2) if x1 == x2 || y1 == y2
     end
-    grid = Day5::Grid.new(points.flatten, max_x, max_y)
+    [points, max_x, max_y]
+  end
+
+  def first_part
+    input_results, max_x, max_y = Day5.read_from_file_part1
+    grid = Day5::Grid.new(input_results.flatten, max_x, max_y)
     puts grid
     puts 'number of overlap:'
     puts grid.number_of_overlap
@@ -112,7 +117,7 @@ module Day5
     max_y
   end
 
-  def to_points(x1, y1, x2, y2)
+  def from_lines_to_points(x1, y1, x2, y2)
     points = []
 
     min_x, max_x = [x1, x2].minmax
@@ -126,4 +131,4 @@ module Day5
   end
 end
 
-Day5.read_from_file
+# Day5.first_part
