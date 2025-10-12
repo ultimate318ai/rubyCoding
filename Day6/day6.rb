@@ -35,7 +35,7 @@ module Day6
   def first_part
     input_results = Day6.read_from_file_part1
     puts "Initial state: #{input_results}"
-    puts "Number of Fish: #{iterate(18, input_results)}"
+    puts "Number of Fish: #{iterate(80, input_results)}"
   end
 end
 
