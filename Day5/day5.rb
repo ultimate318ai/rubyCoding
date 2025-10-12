@@ -91,8 +91,36 @@ module Day5
     [points, max_x, max_y]
   end
 
+  def read_from_file_part2
+    points = []
+    max_x = 0
+    max_y = 0
+    File.open('input.txt').each do |line|
+      x1y1, x2y2 = line.split(' -> ')
+      x1, y1 = x1y1.split(',').map(&:to_i)
+      x2, y2 = x2y2.split(',').map(&:to_i)
+
+      max_x = get_max_from_x(x1, x2, max_x)
+      max_y = get_max_from_x(y1, y2, max_y)
+      if x1 == x2 || y1 == y2
+        points << from_lines_to_points(x1, y1, x2, y2)
+      else
+        points = from_diagonals_to_points(points, x1, y1, x2, y2)
+      end
+    end
+    [points, max_x, max_y]
+  end
+
   def first_part
     input_results, max_x, max_y = Day5.read_from_file_part1
+    grid = Day5::Grid.new(input_results.flatten, max_x, max_y)
+    puts grid
+    puts 'number of overlap:'
+    puts grid.number_of_overlap
+  end
+
+  def second_part
+    input_results, max_x, max_y = Day5.read_from_file_part2
     grid = Day5::Grid.new(input_results.flatten, max_x, max_y)
     puts grid
     puts 'number of overlap:'
@@ -129,6 +157,22 @@ module Day5
     end
     points
   end
+
+  def from_diagonals_to_points(current_points, x1, y1, x2, y2)
+    if x1 < x2
+      current_points << Day5::Point.new(x1, y1)
+      from_diagonals_to_points(current_points, x1 + 1, y1 + 1, x2, y2) if y1 < y2
+      from_diagonals_to_points(current_points, x1 + 1, y1 - 1, x2, y2) if y1 > y2
+    end
+    if x1 > x2
+      current_points << Day5::Point.new(x1, y1)
+      from_diagonals_to_points(current_points, x1 - 1, y1 + 1, x2, y2) if y1 < y2
+      from_diagonals_to_points(current_points, x1 - 1, y1 - 1, x2, y2) if y1 > y2
+    end
+    current_points << Day5::Point.new(x1, y1) if x1 == x2 && y1 == y2
+    current_points
+  end
 end
 
-# Day5.first_part
+Day5.first_part
+Day5.second_part
