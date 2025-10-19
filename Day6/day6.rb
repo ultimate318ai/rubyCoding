@@ -52,38 +52,33 @@ module Day6
 
     def execute_puzzle_input
       input_results = Day6.read_from_file
-      Part2.compute(256, input_results)
+      Part2.compute(12, input_results)
       puts "Number of Fish: #{@counter}"
     end
 
     def compute(days, initial_fish_list)
       initial_fish_list.map do |fish|
-        find_fish(days, fish, 0)
+        @counter += find_fish(days, fish)
       end
     end
 
-    def find_fish(days, value, relative_counter)
-      return relative_counter if days.zero?
+    # 26984457539
+    def find_fish(days, value, initial_call: true, it: 1)
+      return initial_call ? 1 : 0 if days <= value
 
-      key_next_step = "#{days - 1}-#{value - 1}"
+      number_of_new_fish_with_current_value = days - value
 
-      if value.negative?
-        relative_counter += 1
-        key_new_fish = "#{days - 1}-8"
-        if !@already_computed_values.key?(key_next_step) && !@already_computed_values.key?(key_new_fish)
-          @already_computed_values[key_next_step] = find_fish(days - 1, value - 1, relative_counter)
-          @already_computed_values[key_new_fish] = find_fish(days - 1, 8, 0)
-        elsif @already_computed_values.key?(key_next_step)
-          @already_computed_values[key_new_fish] = find_fish(days - 1, 8, 0)
-        elsif @already_computed_values.key?(key_new_fish)
-          @already_computed_values[key_next_step] = find_fish(days - 1, value - 1, relative_counter)
-        end
-        @counter += relative_counter + @already_computed_values[key_next_step] + @already_computed_values[key_new_fish]
+      unless @already_computed_values.key?(((days - value) - 1).to_s)
+        @already_computed_values["#{(days - value) - 1}-#{value}"] =
+          find_fish((days - value) - 1, 8, initial_call: false, it: it + 1)
       end
-      unless @already_computed_values.key?(key_next_step)
-        @already_computed_values[key_next_step] = find_fish(days - 1, value - 1, relative_counter)
+      number_of_new_fish_with_new_fish = (1..number_of_new_fish_with_current_value).to_a.sum do |_|
+        @already_computed_values["#{(days - value) - 1}-#{value}"]
       end
-      @counter += relative_counter + @already_computed_values[key_next_step]
+      puts "iteration: #{it}"
+      puts number_of_new_fish_with_current_value
+      puts number_of_new_fish_with_new_fish
+      1 + number_of_new_fish_with_current_value + number_of_new_fish_with_new_fish
     end
   end
 end
