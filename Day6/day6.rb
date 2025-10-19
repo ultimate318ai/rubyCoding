@@ -52,7 +52,7 @@ module Day6
 
     def execute_puzzle_input
       input_results = Day6.read_from_file
-      Part2.compute(12, input_results)
+      Part2.compute(256, input_results)
       puts "Number of Fish: #{@counter}"
     end
 
@@ -63,21 +63,20 @@ module Day6
     end
 
     # 26984457539
+    # 824481730144761741006
     def find_fish(days, value, initial_call: true, it: 1)
       return initial_call ? 1 : 0 if days <= value
 
       number_of_new_fish_with_current_value = days - value
 
-      unless @already_computed_values.key?(((days - value) - 1).to_s)
-        @already_computed_values["#{(days - value) - 1}-#{value}"] =
-          find_fish((days - value) - 1, 8, initial_call: false, it: it + 1)
+      number_of_new_fish_with_new_fish = (1..number_of_new_fish_with_current_value).to_a.sum do |fish_position|
+        key = "#{(days - value) - 1 - fish_position}-#{value}"
+        unless @already_computed_values.key?(key)
+          @already_computed_values[key] =
+            find_fish((days - value) - 1 - fish_position, 8, initial_call: false, it: it + 1)
+        end
+        @already_computed_values[key]
       end
-      number_of_new_fish_with_new_fish = (1..number_of_new_fish_with_current_value).to_a.sum do |_|
-        @already_computed_values["#{(days - value) - 1}-#{value}"]
-      end
-      puts "iteration: #{it}"
-      puts number_of_new_fish_with_current_value
-      puts number_of_new_fish_with_new_fish
       1 + number_of_new_fish_with_current_value + number_of_new_fish_with_new_fish
     end
   end
