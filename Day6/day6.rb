@@ -64,16 +64,17 @@ module Day6
 
     # 26984457539
     # 824481730144761741006
-    def find_fish(days, value, initial_call: true, it: 1)
+    # 21469412525767308712452
+    def find_fish(days, value, initial_call: true)
       return initial_call ? 1 : 0 if days <= value
 
       number_of_new_fish_with_current_value = days - value
 
       number_of_new_fish_with_new_fish = (1..number_of_new_fish_with_current_value).to_a.sum do |fish_position|
-        key = "#{(days - value) - 1 - fish_position}-#{value}"
+        days_remaining = days - (value + fish_position)
+        key = "#{days_remaining}-#{value}"
         unless @already_computed_values.key?(key)
-          @already_computed_values[key] =
-            find_fish((days - value) - 1 - fish_position, 8, initial_call: false, it: it + 1)
+          @already_computed_values[key] = find_fish(days_remaining, 8, initial_call: false)
         end
         @already_computed_values[key]
       end
