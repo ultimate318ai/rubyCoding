@@ -65,9 +65,10 @@ module Day6
     def find_fish(days, value, relative_counter)
       return relative_counter if days.zero?
 
+      key_next_step = "#{days - 1}-#{value - 1}"
+
       if value.negative?
         relative_counter += 1
-        key_next_step = "#{days - 1}-#{value - 1}"
         key_new_fish = "#{days - 1}-8"
         if !@already_computed_values.key?(key_next_step) && !@already_computed_values.key?(key_new_fish)
           @already_computed_values[key_next_step] = find_fish(days - 1, value - 1, relative_counter)
@@ -79,7 +80,10 @@ module Day6
         end
         @counter += relative_counter + @already_computed_values[key_next_step] + @already_computed_values[key_new_fish]
       end
-      find_fish(days - 1, value - 1, relative_counter)
+      unless @already_computed_values.key?(key_next_step)
+        @already_computed_values[key_next_step] = find_fish(days - 1, value - 1, relative_counter)
+      end
+      @counter += relative_counter + @already_computed_values[key_next_step]
     end
   end
 end
