@@ -62,14 +62,13 @@ module Day6
       end
     end
 
-    # 26984457539
-    # 824481730144761741006
-    # 21469412525767308712452
-    # 201894780439
+    # 26984457539 -> road to go
+    # 201894780439 -> value now ><
     def find_fish(days, value, initial_call: true)
       return initial_call ? 1 : 0 if days <= value
 
-      number_of_new_fish_with_current_value = (days - value) % 6 # Counter resets each 6 times
+      # Counter resets each 6 times for base fish
+      number_of_new_fish_with_current_value = (days - value) % 6
 
       number_of_new_fish_with_new_fish = (1..number_of_new_fish_with_current_value).to_a.sum do |fish_position|
         days_remaining = days - (value + fish_position)
