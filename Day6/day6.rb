@@ -47,50 +47,39 @@ module Day6
   module Part2
     module_function
 
+    @already_computed_values = {}
+    @counter = 0
+
     def execute_puzzle_input
       input_results = Day6.read_from_file
-      puts "Number of Fish: #{Part2.compute(30, input_results)}"
+      Part2.compute(256, input_results)
+      puts "Number of Fish: #{@counter}"
     end
 
     def compute(days, initial_fish_list)
-      sum = 0
-      already_computed_values = {}
       initial_fish_list.map do |fish|
-        more_fish = find_fish(days, fish, 0, already_computed_values)
-        sum += more_fish
+        find_fish(days, fish, 0)
       end
-      sum
     end
 
-    def find_fish(days, value, counter, already_computed_values)
-      return counter if days.zero?
+    def find_fish(days, value, relative_counter)
+      return relative_counter if days.zero?
 
       if value.negative?
-        counter += 1
-        key_current = "#{days - 1}-#{value - 1}-#{counter}"
-        key_new = "#{days - 1}-8-#{counter}"
-        if already_computed_values.key?(key_current) && already_computed_values.key?(key_new)
-          puts '1'
-          already_computed_values[key_current] + already_computed_values[key_new]
-        elsif already_computed_values.key?(key_current)
-          puts '2'
-          already_computed_values[key_new] =
-            find_fish(days - 1, 8, counter, already_computed_values)
-          already_computed_values[key_current] + already_computed_values[key_new]
-        elsif already_computed_values.key?(key_new)
-          puts '3'
-          already_computed_values[key_current] =
-            find_fish(days - 1, value - 1, counter, already_computed_values)
-          already_computed_values[key_current] + already_computed_values[key_new]
+        relative_counter += 1
+        key_next_step = "#{days - 1}-#{value - 1}"
+        key_new_fish = "#{days - 1}-8"
+        if !@already_computed_values.key?(key_next_step) && !@already_computed_values.key?(key_new_fish)
+          @already_computed_values[key_next_step] = find_fish(days - 1, value - 1, relative_counter)
+          @already_computed_values[key_new_fish] = find_fish(days - 1, 8, 0)
+        elsif @already_computed_values.key?(key_next_step)
+          @already_computed_values[key_new_fish] = find_fish(days - 1, 8, 0)
+        elsif @already_computed_values.key?(key_new_fish)
+          @already_computed_values[key_next_step] = find_fish(days - 1, value - 1, relative_counter)
         end
-        puts '4'
-        already_computed_values[key_current] =
-          find_fish(days - 1, value - 1, counter, already_computed_values)
-        already_computed_values[key_new] = find_fish(days - 1, 8, counter, already_computed_values)
-        already_computed_values[key_current] + already_computed_values[key_new]
+        @counter += relative_counter + @already_computed_values[key_next_step] + @already_computed_values[key_new_fish]
       end
-      puts '5'
-      find_fish(days - 1, value - 1, counter, already_computed_values)
+      find_fish(days - 1, value - 1, relative_counter)
     end
   end
 end
