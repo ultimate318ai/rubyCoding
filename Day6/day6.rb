@@ -63,25 +63,29 @@ module Day6
     end
 
     # 26984457539 -> road to go
-    # 201894780439 -> value now ><
-    def find_fish(days, value, initial_call: true)
-      return initial_call ? 1 : 0 if days <= value
+    # TODO: fix the algorithm 233730151171 -> currently
+    def find_fish(days, value, is_root_call: true)
+      return is_root_call ? 1 : 0 if days <= value
 
-      # Counter resets each 6 times for base fish
-      number_of_new_fish_with_current_value = (days - value) % 6
-
+      # Counter resets each 6 times for fish
+      number_of_new_fish_with_current_value = (days / 6) + ((days - value).positive? ? 1 : 0)
       number_of_new_fish_with_new_fish = (1..number_of_new_fish_with_current_value).to_a.sum do |fish_position|
-        days_remaining = days - (value + fish_position)
+        days_remaining = days - (value + 1 + (6 * (fish_position - 1)))
         key = "#{days_remaining}-#{value}"
         unless @already_computed_values.key?(key)
-          @already_computed_values[key] = find_fish(days_remaining, 8, initial_call: false)
+          @already_computed_values[key] = find_fish(days_remaining, 8, is_root_call: false)
         end
         @already_computed_values[key]
       end
-      1 + number_of_new_fish_with_current_value + number_of_new_fish_with_new_fish
+      key = "#{days}-#{value}"
+      unless @already_computed_values.key?(key)
+        @already_computed_values[key] =
+          number_of_new_fish_with_current_value + number_of_new_fish_with_new_fish
+      end
+      @already_computed_values[key]
     end
   end
 end
 
-# Day6::Part1.execute_puzzle_input
+Day6::Part1.execute_puzzle_input
 Day6::Part2.execute_puzzle_input
