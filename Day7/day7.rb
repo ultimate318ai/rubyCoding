@@ -15,6 +15,17 @@ module Day7
     module_function
 
     def execute_puzzle_input
+      crab_list = Day7.read_from_file
+      min_crab = crab_list.min
+      max_crab = crab_list.max
+
+      fluel_cost_by_position = (min_crab..max_crab).to_a.map do |position|
+        crab_list.sum { |crab| (crab - position).abs }
+      end
+      puts fluel_cost_by_position
+      min_consumption_position = fluel_cost_by_position.min
+      puts "min_consumption_position: #{fluel_cost_by_position.index(min_consumption_position)}"
+      puts "optional_consumption: #{min_consumption_position}"
     end
   end
 
